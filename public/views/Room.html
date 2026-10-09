@@ -105,7 +105,8 @@
         <script defer src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.es5.min.js"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.js"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+        <script src="../js/join-url.js"></script>
+        <script defer src="../js/vendor/qrious.min.js"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/fabric@5.3.0-browser/dist/fabric.min.js"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.8"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
@@ -183,7 +184,7 @@
         <section>
             <div id="initUser" class="init-user hidden">
                 <div id="initVideoContainer" class="init-video-container">
-                    <video id="initVideo" playsinline="true" autoplay="" class="mirror"></video>
+                    <video id="initVideo" playsinline="true" autoplay=""></video>
                     <div id="initVideoLoader" class="init-video-loader">
                         <div class="loading-spinner">
                             <div class="spinner-ring"></div>

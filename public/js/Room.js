@@ -314,7 +314,7 @@ let video = false;
 let screen = false;
 let hand = false;
 let camera = 'user';
-let sessionVideoMirror = true;
+let sessionVideoMirror = false; // OT: show the camera as it is (not as a selfie mirror); the Mirror button still toggles it
 
 let recTimer = null;
 let recElapsedTime = null;
@@ -348,7 +348,7 @@ let workletNode = null;
 // window.location.origin + '/join/' + roomId
 // window.location.origin + '/join/?room=' + roomId + '&token=' + myToken
 
-let RoomURL = window.location.origin + '/join/' + room_id;
+let RoomURL = (window.otShareOrigin ? window.otShareOrigin() : window.location.origin) + '/join/' + room_id;
 
 let isExiting = false;
 

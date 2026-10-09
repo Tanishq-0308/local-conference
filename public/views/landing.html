@@ -115,19 +115,36 @@
                         <!-- LAN join URL — auto-filled per launch by ../js/join-url.js -->
                         <div
                             class="lan-join-banner"
-                            style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; max-width: 720px; margin: 0 auto 28px; padding: 18px 28px; background: linear-gradient(135deg, #16202e 0%, #0f1722 100%); border: 1px solid #2d3a4f; border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);"
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; max-width: 720px; margin: 0 auto 28px; padding: 22px 28px; background: linear-gradient(135deg, #16202e 0%, #0f1722 100%); border: 1px solid #2d3a4f; border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);"
                         >
-                            <span style="display: inline-flex; align-items: center; gap: 8px; color: #9fb0c3; font-size: 15px; font-weight: 500;">
-                                <i class="fas fa-wifi" style="color: #3b82f6;"></i>
-                                Others on this network join at
-                            </span>
-                            <a
-                                id="lanJoinUrl"
-                                href="#"
-                                style="color: #ffffff; background: #2563eb; padding: 10px 20px; border-radius: 10px; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; text-decoration: none; white-space: nowrap; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);"
-                                >https://…:3010</a
+                            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 260px; flex: 1;">
+                                <span style="display: inline-flex; align-items: center; gap: 8px; color: #9fb0c3; font-size: 15px; font-weight: 500;">
+                                    <i class="fas fa-wifi" style="color: #3b82f6;"></i>
+                                    Others on this network join at
+                                </span>
+                                <a
+                                    id="lanJoinUrl"
+                                    href="#"
+                                    style="color: #ffffff; background: #2563eb; padding: 10px 20px; border-radius: 10px; font-size: 18px; font-weight: 700; letter-spacing: 0.3px; text-decoration: none; white-space: nowrap; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);"
+                                    >https://…:3010</a
+                                >
+                                <span id="lanJoinFallback" style="display: none; align-items: center; gap: 6px; color: #6b7f95; font-size: 13px;">
+                                    If that address does not open:
+                                    <a href="#" style="color: #9fb0c3; text-decoration: underline;"></a>
+                                </span>
+                                <span id="lanJoinQrHint" style="display: none; align-items: center; gap: 8px; color: #6b7f95; font-size: 13px;">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    Or scan the code with a phone or tablet
+                                </span>
+                            </div>
+                            <div
+                                id="lanJoinQrBox"
+                                style="display: none; background: #ffffff; padding: 8px; border-radius: 10px; line-height: 0;"
                             >
+                                <canvas id="lanJoinQr" title="Scan to join from a phone or tablet on this network"></canvas>
+                            </div>
                         </div>
+                        <script src="../js/vendor/qrious.min.js"></script>
                         <script src="../js/join-url.js"></script>
                         <div class="cta-inner section-inner br-12">
                             <h3 id="joinDescription" class="section-title mt-0">

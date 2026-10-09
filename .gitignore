@@ -24,3 +24,8 @@ security
 
 # virtual background
 custom
+# OT Video System: per machine, never committed
+app/ssl-ot/
+.ot-conference-name
+public/js/join-url.js
+*.bak-*
