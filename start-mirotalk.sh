@@ -1,35 +1,48 @@
 #!/usr/bin/env bash
 #
-# Starts MiroTalk SFU with the announced WebRTC IP auto-detected from the
-# machine's current active network. Re-detects on every launch, so moving the
-# system to a different WiFi/LAN just works — no need to edit .env by hand.
+# Runs MiroTalk SFU natively with Node.js (22 or newer), in the foreground: started by the
+# ot-conference user service (ot-conference.service), which the OT app starts and stops.
+# Re-detects the LAN IP on every start, so moving the machine to another network just works.
+#
+#   one-time: npm ci   (installs node_modules; needs internet)
+#   run:      ./start-mirotalk.sh        or   systemctl --user start ot-conference
 #
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
-# Active LAN IP = the source address the kernel would use to reach the internet
-# (i.e. the IP on the interface with the default route). Falls back gracefully.
-detect_ip() {
-    local ip
-    ip="$(ip -o route get 8.8.8.8 2>/dev/null | awk '{for (i=1;i<=NF;i++) if ($i=="src") {print $(i+1); exit}}')"
-    if [ -z "${ip:-}" ]; then
-        # Fallback: first non-loopback, non-docker IPv4.
-        ip="$(ip -4 -o addr show scope global 2>/dev/null \
-              | awk '{print $4}' | cut -d/ -f1 \
-              | grep -vE '^(172\.1[7-9]|172\.2[0-9]|172\.3[01])\.' | head -1)"
-    fi
-    echo "${ip:-127.0.0.1}"
-}
+NODE="${OT_NODE:-node}"
+if ! command -v "$NODE" >/dev/null 2>&1; then
+    echo "Node.js not found (install Node.js 22, or set OT_NODE)" >&2
+    exit 1
+fi
+NODE_MAJOR="$("$NODE" -p 'process.versions.node.split(".")[0]')"
+if [ "$NODE_MAJOR" -lt 22 ]; then
+    echo "Node.js $("$NODE" --version) is too old: MiroTalk needs 22 or newer" >&2
+    exit 1
+fi
+if [ ! -d node_modules ]; then
+    echo "node_modules missing: run 'npm ci' in $(pwd) once" >&2
+    exit 1
+fi
 
-LAN_IP="$(detect_ip)"
-export SFU_ANNOUNCED_IP="$LAN_IP"
+source ./ot-prepare.sh
+
+if [ "$OT_HAS_OWN_CERT" = 1 ]; then
+    # Paths are relative to app/src (Server.js)
+    export SERVER_SSL_CERT=../ssl-ot/cert.pem
+    export SERVER_SSL_KEY=../ssl-ot/key.pem
+    CERT_TEXT="this machine's own (app/ssl-ot)"
+else
+    CERT_TEXT="MiroTalk demo certificate - run ot_qt_app/scripts/setup-conference.sh"
+fi
 
 echo "================================================================"
-echo " MiroTalk SFU starting"
+echo " MiroTalk SFU (native, Node $("$NODE" --version)) starting"
 echo "   Announced WebRTC IP : $SFU_ANNOUNCED_IP   (auto-detected)"
 echo "   Join from this PC   : https://localhost:3010"
-echo "   Join from LAN       : https://$LAN_IP:3010"
+echo "   Join from LAN       : ${LAN_ORIGIN:-https://$LAN_IP:3010}${FALLBACK_ORIGIN:+   (or $FALLBACK_ORIGIN)}"
+echo "   Certificate         : $CERT_TEXT"
 echo "================================================================"
 
-exec npm start
+exec "$NODE" app/src/Server.js

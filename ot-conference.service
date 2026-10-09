@@ -1,0 +1,18 @@
+# User service for the OT local conference (MiroTalk, native). Installed by
+# ot_qt_app/scripts/install.sh into ~/.config/systemd/user/ with @DIR@ replaced by this folder.
+# The OT app starts and stops it: systemctl --user start|stop ot-conference
+[Unit]
+Description=OT local conference (MiroTalk SFU)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@DIR@
+ExecStart=@DIR@/start-mirotalk.sh
+Restart=on-failure
+RestartSec=3
+# Node from the installer's location if set there (else node on PATH)
+EnvironmentFile=-%h/.config/ot-conference.env
+
+[Install]
+WantedBy=default.target
