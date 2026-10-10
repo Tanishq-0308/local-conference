@@ -26,6 +26,13 @@ if [ ! -d node_modules ]; then
     exit 1
 fi
 
+# MiroTalk's settings file is not in git (config.js is ignored): a fresh clone starts from the
+# template, which we use unchanged (our settings come from .env)
+if [ ! -f app/src/config.js ]; then
+    cp app/src/config.template.js app/src/config.js
+    echo "app/src/config.js created from config.template.js"
+fi
+
 source ./ot-prepare.sh
 
 if [ "$OT_HAS_OWN_CERT" = 1 ]; then
