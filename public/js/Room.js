@@ -1530,6 +1530,7 @@ async function handleAudioVideo() {
 
 async function checkInitVideo(isVideoAllowed) {
     if (isVideoAllowed && BUTTONS.main.startVideoButton) {
+        selectOtCamera();
         if (initVideoSelect.value) {
             initVideoContainerShow();
             await changeCamera(initVideoSelect.value);
@@ -2952,7 +2953,24 @@ async function setSelectsInit() {
         //
         console.log('04.4 ----> Get Local Storage Devices after', lS.getLocalStorageDevices());
     }
+    selectOtCamera();
     if (initVideoSelect.value) await changeCamera(initVideoSelect.value);
+}
+
+// OT: the meeting camera is the OT app's virtual camera "OT Camera". The real cameras (USB,
+// capture cards) are open in the OT app, so choosing one of them here fails with "Already in
+// use"; whenever "OT Camera" is there it is chosen, whatever was saved or listed first.
+function selectOtCamera() {
+    let found = false;
+    for (const select of [initVideoSelect, videoSelect]) {
+        if (!select) continue;
+        const index = Array.from(select.options).findIndex((option) => /OT Camera/i.test(option.text));
+        if (index >= 0) {
+            select.selectedIndex = index;
+            found = true;
+        }
+    }
+    if (found) refreshLsDevices();
 }
 
 function selectOptionByValueExist(selectElement, value) {
